@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Gates: Pauli, Phase & Hadamard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease-out;
+        }
+        
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .gates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .gate-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .gate-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+        
+        .gate-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .gate-description {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        
+        .matrix-display {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .matrix-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: #764ba2;
+        }
+        
+        .code-section {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .code-section.active {
+            display: block;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0 8px 25px;
+            position: relative;
+            color: #555;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f9f9f9;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌌 Quantum Gates Visualization</h1>
+            <p>Interactive exploration of Pauli, Phase & Hadamard Gates</p>
+        </header>
+
+        <div class="gates-grid">
+            <!-- PAULI X GATE -->
+            <div class="gate-card">
+                <div class="gate-title">🔴 PAULI X GATE (Bit Flip)</div>
+                <div class="gate-description">
+                    The Pauli X gate performs a rotation of π radians around the X-axis. It flips the qubit state: |0⟩ → |1⟩ and |1⟩ → |0⟩.
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-title">Matrix Representation:</div>
+                    <div>X = [0  1]<br>[1  0]</div>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>X|0⟩ = |1⟩</strong></li>
+                    <li><strong>X|1⟩ = |0⟩</strong></li>
+                    <li>Eigenvalues: +1, -1</li>
+                    <li>Classical equivalent: NOT gate</li>
+                </ul>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'paulix-qiskit')">Qiskit Code</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'paulix-braket')">Amazon Braket Code</button>
+                </div>
+                <div id="paulix-qiskit" class="code-section active">
+<pre>from qiskit import QuantumCircuit, QuantumRegister
+from qiskit_aer import AerSimulator
+
+# Create circuit
+qc = QuantumCircuit(1, 1)
+
+# Apply Pauli X gate
+qc.x(0)
+
+# Measure
+qc.measure(0, 0)
+
+# Simulate
+simulator = AerSimulator()
+job = simulator.run(qc, shots=1000)
+result = job.result()
+counts = result.get_counts(qc)
+print(counts)
+# Output: {'1': 1000}</pre>
+                </div>
+                <div id="paulix-braket" class="code-section">
+<pre>from braket.circuits import Circuit
+from braket.aws import AwsDevice
+
+# Create circuit
+circuit = Circuit()
+circuit.x(0)  # Apply Pauli X
+circuit.result_type('sample')
+
+# Run on simulator  
+device = AwsDevice(
+    "arn:aws:braket:::device/quantum-simulator/amazon/sv1"
+)
+task = device.run(circuit, shots=1000)
+result = task.result()
+counts = result.measurement_counts
+print(counts)
+# Output: {'1': 1000}</pre>
+                </div>
+            </div>
+            
+            <!-- PAULI Y GATE -->
+            <div class="gate-card">
+                <div class="gate-title">🟢 PAULI Y GATE</div>
+                <div class="gate-description">
+                    The Pauli Y gate performs a rotation of π radians around the Y-axis. It combines bit-flip and phase-flip: Y|0⟩ = i|1⟩ and Y|1⟩ = -i|0⟩.
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-title">Matrix Representation:</div>
+                    <div>Y = [0  -i]<br>[i   0]</div>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Y|0⟩ = i|1⟩</strong></li>
+                    <li><strong>Y|1⟩ = -i|0⟩</strong></li>
+                    <li>Includes phase factor (i)</li>
+                    <li>Combines X and Z operations</li>
+                </ul>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'pauliy-qiskit')">Qiskit Code</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'pauliy-braket')">Amazon Braket Code</button>
+                </div>
+                <div id="pauliy-qiskit" class="code-section active">
+<pre>from qiskit import QuantumCircuit
+from qiskit_aer import AerSimulator
+
+# Create circuit
+qc = QuantumCircuit(1, 1)
+
+# Apply Pauli Y gate
+qc.y(0)
+
+# Measure
+qc.measure(0, 0)
+
+# Simulate
+simulator = AerSimulator()
+job = simulator.run(qc, shots=1000)
+result = job.result()
+counts = result.get_counts(qc)
+print(counts)
+# Output: {'1': 1000}</pre>
+                </div>
+                <div id="pauliy-braket" class="code-section">
+<pre>from braket.circuits import Circuit
+from braket.aws import AwsDevice
+
+# Create circuit
+circuit = Circuit()
+circuit.y(0)  # Apply Pauli Y
+circuit.result_type('sample')
+
+# Run on simulator
+device = AwsDevice(
+    "arn:aws:braket:::device/quantum-simulator/amazon/sv1"
+)
+task = device.run(circuit, shots=1000)
+result = task.result()
+counts = result.measurement_counts
+print(counts)
+# Output: {'1': 1000}</pre>
+                </div>
+            </div>
+            
+            <!-- PAULI Z GATE -->
+            <div class="gate-card">
+                <div class="gate-title">🔵 PAULI Z GATE (Phase Flip)</div>
+                <div class="gate-description">
+                    The Pauli Z gate performs a rotation of π radians around the Z-axis. It applies a phase flip: Z|0⟩ = |0⟩ and Z|1⟩ = -|1⟩.
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-title">Matrix Representation:</div>
+                    <div>Z = [1   0]<br>[0  -1]</div>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Z|0⟩ = |0⟩</strong></li>
+                    <li><strong>Z|1⟩ = -|1⟩</strong></li>
+                    <li>Introduces global phase -1</li>
+                    <li>Only affects phase, not amplitude</li>
+                </ul>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'pauliz-qiskit')">Qiskit Code</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'pauliz-braket')">Amazon Braket Code</button>
+                </div>
+                <div id="pauliz-qiskit" class="code-section active">
+<pre>from qiskit import QuantumCircuit
+from qiskit_aer import AerSimulator
+
+# Create circuit with superposition
+qc = QuantumCircuit(1, 1)
+
+# Create superposition
+qc.h(0)
+
+# Apply Pauli Z gate  
+qc.z(0)
+
+# Measure
+qc.measure(0, 0)
+
+# Simulate
+simulator = AerSimulator()
+job = simulator.run(qc, shots=1000)
+result = job.result()
+counts = result.get_counts(qc)
+print(counts)</pre>
+                </div>
+                <div id="pauliz-braket" class="code-section">
+<pre>from braket.circuits import Circuit
+from braket.aws import AwsDevice
+
+# Create circuit
+circuit = Circuit()
+circuit.h(0)  # Hadamard for superposition
+circuit.z(0)  # Apply Pauli Z
+circuit.result_type('sample')
+
+# Run on simulator
+device = AwsDevice(
+    "arn:aws:braket:::device/quantum-simulator/amazon/sv1"
+)
+task = device.run(circuit, shots=1000)
+result = task.result()
+counts = result.measurement_counts
+print(counts)</pre>
+                </div>
+            </div>
+        </div>
+        <!-- NEW GRID FOR PHASE AND HADAMARD -->
+        <div class="gates-grid">
+            <!-- PHASE GATE (S GATE) -->
+            <div class="gate-card">
+                <div class="gate-title">🟡 PHASE GATE (S Gate)</div>
+                <div class="gate-description">
+                    The Phase gate (S gate) applies a 90-degree phase rotation (π/2 radians). It leaves |0⟩ unchanged but applies e^(iπ/2) phase to |1⟩.
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-title">Matrix Representation:</div>
+                    <div>S = [1  0]<br>[0  i]</div>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>S|0⟩ = |0⟩</strong></li>
+                    <li><strong>S|1⟩ = i|1⟩</strong></li>
+                    <li>Phase shift: π/2 (90°)</li>
+                    <li>S² = Z gate</li>
+                </ul>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'phase-qiskit')">Qiskit Code</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'phase-braket')">Amazon Braket Code</button>
+                </div>
+                <div id="phase-qiskit" class="code-section active">
+<pre>from qiskit import QuantumCircuit
+from qiskit_aer import AerSimulator
+
+# Create circuit
+qc = QuantumCircuit(1, 1)
+
+# Create |1> state
+qc.x(0)
+
+# Apply S (Phase) gate
+qc.s(0)
+
+# Measure
+qc.measure(0, 0)
+
+# Simulate
+simulator = AerSimulator()
+job = simulator.run(qc, shots=1000)
+result = job.result()
+counts = result.get_counts(qc)
+print(counts)
+# Output: {'1': 1000}</pre>
+                </div>
+                <div id="phase-braket" class="code-section">
+<pre>from braket.circuits import Circuit
+from braket.aws import AwsDevice
+
+# Create circuit
+circuit = Circuit()
+circuit.x(0)  # Create |1> state
+circuit.phaseshift(0, 1.5707963267948966)  # π/2 phase
+circuit.result_type('sample')
+
+# Run on simulator
+device = AwsDevice(
+    "arn:aws:braket:::device/quantum-simulator/amazon/sv1"
+)
+task = device.run(circuit, shots=1000)
+result = task.result()
+counts = result.measurement_counts
+print(counts)</pre>
+                </div>
+            </div>
+            
+            <!-- T GATE -->
+            <div class="gate-card">
+                <div class="gate-title">🟠 T GATE</div>
+                <div class="gate-description">
+                    The T gate applies a 45-degree phase rotation (π/4 radians). It leaves |0⟩ unchanged but applies e^(iπ/4) phase to |1⟩.
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-title">Matrix Representation:</div>
+                    <div>T = [1      0]<br>[0  e^(iπ/4)]</div>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>T|0⟩ = |0⟩</strong></li>
+                    <li><strong>T|1⟩ = e^(iπ/4)|1⟩</strong></li>
+                    <li>Phase shift: π/4 (45°)</li>
+                    <li>T² = S gate</li>
+                </ul>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 't-qiskit')">Qiskit Code</button>
+                    <button class="tab-btn" onclick="switchTab(event, 't-braket')">Amazon Braket Code</button>
+                </div>
+                <div id="t-qiskit" class="code-section active">
+<pre>from qiskit import QuantumCircuit
+from qiskit_aer import AerSimulator
+
+# Create circuit
+qc = QuantumCircuit(1, 1)
+
+# Create |1> state
+qc.x(0)
+
+# Apply T gate
+qc.t(0)
+
+# Measure
+qc.measure(0, 0)
+
+# Simulate
+simulator = AerSimulator()
+job = simulator.run(qc, shots=1000)
+result = job.result()
+counts = result.get_counts(qc)
+print(counts)</pre>
+                </div>
+                <div id="t-braket" class="code-section">
+<pre>from braket.circuits import Circuit
+from braket.aws import AwsDevice
+import math
+
+# Create circuit
+circuit = Circuit()
+circuit.x(0)  # Create |1> state
+circuit.phaseshift(0, math.pi/4)  # π/4 phase
+circuit.result_type('sample')
+
+# Run on simulator
+device = AwsDevice(
+    "arn:aws:braket:::device/quantum-simulator/amazon/sv1"
+)
+task = device.run(circuit, shots=1000)
+result = task.result()
+counts = result.measurement_counts
+print(counts)</pre>
+                </div>
+            </div>
+            
+            <!-- HADAMARD GATE -->
+            <div class="gate-card">
+                <div class="gate-title">✨ HADAMARD GATE</div>
+                <div class="gate-description">
+                    The Hadamard gate creates an equal superposition of |0⟩ and |1⟩. It's crucial for quantum algorithms and performs a rotation of π radians around the (X+Z)/√2 axis.
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-title">Matrix Representation:</div>
+                    <div>H = (1/√2) [1   1]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1  -1]</div>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>H|0⟩ = (|0⟩ + |1⟩)/√2</strong></li>
+                    <li><strong>H|1⟩ = (|0⟩ - |1⟩)/√2</strong></li>
+                    <li>Creates superposition</li>
+                    <li>H² = I (applies twice = identity)</li>
+                </ul>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'hadamard-qiskit')">Qiskit Code</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'hadamard-braket')">Amazon Braket Code</button>
+                </div>
+                <div id="hadamard-qiskit" class="code-section active">
+<pre>from qiskit import QuantumCircuit, QuantumRegister
+from qiskit_aer import AerSimulator
+
+# Create circuit
+qc = QuantumCircuit(1, 1)
+
+# Apply Hadamard gate
+qc.h(0)
+
+# Measure
+qc.measure(0, 0)
+
+# Simulate
+simulator = AerSimulator()
+job = simulator.run(qc, shots=1000)
+result = job.result()
+counts = result.get_counts(qc)
+print(counts)
+# Output: ~50% |0>, ~50% |1></pre>
+                </div>
+                <div id="hadamard-braket" class="code-section">
+<pre>from braket.circuits import Circuit
+from braket.aws import AwsDevice
+
+# Create circuit
+circuit = Circuit()
+circuit.h(0)  # Apply Hadamard
+circuit.result_type('sample')
+
+# Run on simulator
+device = AwsDevice(
+    "arn:aws:braket:::device/quantum-simulator/amazon/sv1"
+)
+task = device.run(circuit, shots=1000)
+result = task.result()
+counts = result.measurement_counts
+print(counts)
+# Output: ~50% 0, ~50% 1</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- COMPARISON TABLE -->
+        <h2 style="color: white; text-align: center; margin: 50px 0 30px 0; font-size: 2em;">Gate Comparison</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Gate</th>
+                    <th>Symbol</th>
+                    <th>Effect on |0⟩</th>
+                    <th>Effect on |1⟩</th>
+                    <th>Type</th>
+                    <th>Key Property</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Pauli X</strong></td>
+                    <td>NOT</td>
+                    <td>|1⟩</td>
+                    <td>|0⟩</td>
+                    <td>Bit Flip</td>
+                    <td>X² = I</td>
+                </tr>
+                <tr>
+                    <td><strong>Pauli Y</strong></td>
+                    <td>Y</td>
+                    <td>i|1⟩</td>
+                    <td>-i|0⟩</td>
+                    <td>Rotation</td>
+                    <td>Y² = I</td>
+                </tr>
+                <tr>
+                    <td><strong>Pauli Z</strong></td>
+                    <td>Z</td>
+                    <td>|0⟩</td>
+                    <td>-|1⟩</td>
+                    <td>Phase Flip</td>
+                    <td>Z² = I</td>
+                </tr>
+                <tr>
+                    <td><strong>Phase (S)</strong></td>
+                    <td>S</td>
+                    <td>|0⟩</td>
+                    <td>i|1⟩</td>
+                    <td>Phase (π/2)</td>
+                    <td>S² = Z</td>
+                </tr>
+                <tr>
+                    <td><strong>T</strong></td>
+                    <td>T</td>
+                    <td>|0⟩</td>
+                    <td>e^(iπ/4)|1⟩</td>
+                    <td>Phase (π/4)</td>
+                    <td>T² = S</td>
+                </tr>
+                <tr>
+                    <td><strong>Hadamard</strong></td>
+                    <td>H</td>
+                    <td>(|0⟩+|1⟩)/√2</td>
+                    <td>(|0⟩-|1⟩)/√2</td>
+                    <td>Superposition</td>
+                    <td>H² = I</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <footer>
+            <h3>Quantum Computing Gates Reference</h3>
+            <p>Learn the fundamental quantum gates used in quantum algorithms</p>
+            <p style="margin-top: 20px; opacity: 0.8;">© 2024 Quantum Gates Visualization | IBM Qiskit & Amazon Braket</p>
+        </footer>
+    </div>
+    
+    <script>
+        function switchTab(event, tabId) {
+            // Hide all code sections in this card
+            const card = event.target.parentElement.parentElement;
+            const sections = card.querySelectorAll('.code-section');
+            sections.forEach(s => s.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update button styles
+            const buttons = card.querySelectorAll('.tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
